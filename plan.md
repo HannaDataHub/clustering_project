@@ -9,7 +9,7 @@
 
 ---
 
-## Étape 0 : Démarrage (ENSEMBLE)
+## Étape 0 : Démarrage (ENSEMBLE) - FAIT
 
 À faire à deux, une seule fois.
 
@@ -35,7 +35,7 @@
 
 Ces deux colonnes sont **indépendantes**. B n'a pas besoin de Fisher pour avancer, car ses outils prennent des labels quelconques.
 
-**Livrable A :** fonctions `diam` et `clustfisher` qui tournent sans erreur.
+**Livrable A :** fonctions `diam` et `clustfisher` qui tournent sans erreur. - FAIT
 **Livrable B :** données chargées, fonctions de tracé/ARI/confusion testées, k-means et CAH fonctionnels.
 
 ---
