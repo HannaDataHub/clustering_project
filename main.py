@@ -9,8 +9,8 @@ from utils import (load_table, split_aiguillage, plot_coude, plot_segmentation,
 
 
 def partie_simulee(kmax=8):
-    # TODO : adapter le chemin et les paramètres de lecture
-    X = load_table("data/sequencesimu.csv").to_numpy(dtype=float)
+    df_seq = load_table("sequencesimu.txt", sep=r"\s+", header=0)
+    X = df_seq.to_numpy(dtype=float)
 
     # Coude : un seul appel avec Kmax donne C pour tous les k <= Kmax
     _, _, _, M = clustfisher(X, kmax)
@@ -18,7 +18,7 @@ def partie_simulee(kmax=8):
     plot_coude(Cs, "Coude : sequencesimu")
     plt.savefig("coude_simule.png", dpi=150)
 
-    K = 3                              # TODO : à choisir à deux après lecture du coude
+    K = 3      # TODO : à choisir à deux après lecture du coude
     t, lab_fisher, C, _ = clustfisher(X, K)
     lab_km = kmeans_labels(X, K)
     lab_cah = cah_labels(X, K)
@@ -28,9 +28,8 @@ def partie_simulee(kmax=8):
 
 
 def partie_reelle(K=4):
-    # TODO : adapter le chemin et les paramètres de lecture
-    df = load_table("data/aiguillage.csv", header=None)
-    X, vrai = split_aiguillage(df)
+    df_aigu = load_table("aiguillage.txt", sep=",", header=None)
+    X, vrai = split_aiguillage(df_aigu)
     X, vrai = X[:140], vrai[:140]      # les 140 premières observations
 
     t, lab_fisher, C, _ = clustfisher(X, K)

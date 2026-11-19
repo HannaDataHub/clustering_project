@@ -17,6 +17,7 @@ def load_table(path, **kwargs):
 
 def split_aiguillage(df):
     """Sépare les 552 variables (X) de la 553e colonne (vraie partition)."""
+    assert df.shape[1] == 553, f"Attendu : 553 colonnes, trouvé : {df.shape[1]}"
     X = df.iloc[:, :552].to_numpy(dtype=float)
     y = df.iloc[:, 552].to_numpy()
     return X, y
@@ -42,8 +43,8 @@ def ari(labels1, labels2):
 
 def confusion(vrai, pred):
     """Matrice de confusion (attention : les numéros de classes sont arbitraires)."""
-    return confusion_matrix(vrai, pred)
-
+    return pd.crosstab(pd.Series(vrai, name="vraie"),
+                       pd.Series(pred, name="estimée"))
 
 def points_de_rupture(labels):
     """Indices (à partir de 1) où le label change dans la séquence."""
@@ -55,28 +56,43 @@ def points_de_rupture(labels):
 def plot_coude(Cs, title="Méthode du coude"):
     """Cs[k-1] = critère C pour K = k."""
     ks = np.arange(1, len(Cs) + 1)
-    plt.figure(figsize=(5, 3.5))
+    fig = plt.figure(figsize=(5, 3.5))
     plt.plot(ks, Cs, "o-")
     plt.xlabel("K")
     plt.ylabel("Critère C")
     plt.title(title)
     plt.tight_layout()
+    return fig
 
-
-def plot_segmentation(X, labels, ruptures=None, ax=None, title=""):
-    """Séquence colorée selon les labels, avec traits de rupture optionnels.
-
-    Pour p >= 2 : on trace la 1re variable (adapter à vos besoins).
-    """
+def plot_segmentation(X, labels, ruptures=None, title=""):
+    """Une ligne de graphique par variable, points colorés par classe."""
     X = np.asarray(X, dtype=float)
     if X.ndim == 1:
         X = X.reshape(-1, 1)
-    if ax is None:
-        _, ax = plt.subplots(figsize=(6, 3.5))
-    ax.scatter(np.arange(1, len(X) + 1), X[:, 0], c=labels, cmap="tab10", s=12)
-    if ruptures is not None:
-        for r in ruptures:
-            ax.axvline(r - 0.5, color="orange", linestyle="--", linewidth=1)
-    ax.set_xlabel("ordre des données")
-    ax.set_title(title)
-    return ax
+    p = X.shape[1]
+    fig, axes = plt.subplots(p, 1, sharex=True, figsize=(7, 2.5 * p))
+    axes = np.atleast_1d(axes)
+    for j, ax in enumerate(axes):
+        ax.scatter(np.arange(1, len(X) + 1), X[:, j], c=labels,
+                   cmap="tab10", s=12)
+        if ruptures is not None:
+            for r in ruptures:
+                ax.axvline(r - 0.5, color="orange", linestyle="--", linewidth=1)
+        ax.set_ylabel(f"variable {j+1}")
+    axes[0].set_title(title)
+    axes[-1].set_xlabel("ordre des données")
+    return fig
+
+
+def plot_labels(labels_dict, title=""):
+    """Pour aiguillage : un escalier par méthode.
+    labels_dict = {"Vraie": vrai, "Fisher": lab_f, "k-means": lab_k}"""
+    n = len(labels_dict)
+    fig, axes = plt.subplots(n, 1, sharex=True, figsize=(7, 1.6 * n))
+    axes = np.atleast_1d(axes)
+    for ax, (nom, lab) in zip(axes, labels_dict.items()):
+        ax.step(np.arange(1, len(lab) + 1), lab, where="mid")
+        ax.set_ylabel(nom)
+    axes[0].set_title(title)
+    axes[-1].set_xlabel("ordre des données")
+    return fig
