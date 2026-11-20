@@ -9,7 +9,7 @@ from utils import (load_table, split_aiguillage, plot_coude, plot_segmentation,
 
 
 def partie_simulee(kmax=8):
-    df_seq = load_table("sequencesimu.txt", sep=r"\s+", header=0)
+    df_seq = load_table("data/sequencesimu.txt", sep=r"\s+", header=0)
     X = df_seq.to_numpy(dtype=float)
 
     # Coude : un seul appel avec Kmax donne C pour tous les k <= Kmax
@@ -28,7 +28,7 @@ def partie_simulee(kmax=8):
 
 
 def partie_reelle(K=4):
-    df_aigu = load_table("aiguillage.txt", sep=",", header=None)
+    df_aigu = load_table("data/aiguillage.txt", sep=",", header=None)
     X, vrai = split_aiguillage(df_aigu)
     X, vrai = X[:140], vrai[:140]      # les 140 premières observations
 
