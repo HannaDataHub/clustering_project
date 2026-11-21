@@ -82,21 +82,44 @@ Les partitions sont comparées par :
 
 ### 3.1 Données
 
-[À COMPLÉTER : taille de la séquence $n$, dimension $p = 2$, figure de la séquence brute.]
+La séquence sequencesimu contient n = 160 observations en dimension p = 2 (variables 1 et 2). La figure 1 montre chaque variable en fonction de l’ordre des données. On y distingue quatre blocs consécutifs :
+
+environ 1 à 50 : les deux variables oscillent autour de 0 ;
+environ 51 à 80 : la variable 2 monte autour de 3 à 4 ;
+environ 81 à 130 : retour autour de (0, 0) ;
+environ 131 à 160 : la variable 1 monte autour de 4.
+
+Le bloc 1 et le bloc 3 ont donc le même niveau moyen, mais ils ne sont pas consécutifs. C’est un cas où la contrainte d’ordre est importante.
+
+Figure 1 : données brutes (donnees_simu.png).
 
 ### 3.2 Choix du nombre de segments
 
-Nous calculons le critère $C$ pour $K = 1, \dots, K_{\max}$ ($K_{\max}$ = [valeur]) à partir de la matrice $M$, puis appliquons la méthode du coude.
+Nous appliquons l’algorithme de Fisher une seule fois avec K_max = 8. La matrice M donne alors le critère C pour tout K ≤ 8, car C(K) = M[n, K]. La figure 2 montre la courbe obtenue.
 
-**[FIGURE 1 : courbe du coude, $C$ en fonction de $K$.]**
+Forme de X : (160, 2)
 
-[À COMPLÉTER : valeurs de $C$, justification du $K$ retenu (point à partir duquel la décroissance de $C$ devient faible). Valeur retenue : $K$ = [valeur].]
+ K |   critère C | gain par rapport à K-1
+ 1 |       884.1 |
+ 2 |       503.6 |    380.6  (43.0 %)
+ 3 |       462.0 |     41.6  ( 8.3 %)
+ 4 |       300.6 |    161.4  (34.9 %)
+ 5 |       292.4 |      8.2  ( 2.7 %)
+ 6 |       285.5 |      6.9  ( 2.4 %)
+ 7 |       277.6 |      7.9  ( 2.8 %)
+ 8 |       270.7 |      6.9  ( 2.5 %)
+
+C diminue toujours quand K augmente, ce qui est normal : on cherche donc le point où le gain devient faible. Le passage de K = 3 à K = 4 apporte encore un gain d’environ 35 %, alors qu’au-delà de K = 4 le gain est inférieur à 3 % par segment ajouté. Nous retenons K = 4. Avec K = 3, un bloc distinct (celui où la variable 2 est élevée) reste fusionné avec le premier bloc.
+
+Figure 2 : courbe du coude (coude_simule.png).
 
 ### 3.3 Segmentation par l'algorithme de Fisher
 
-**[FIGURE 2 : séquence colorée par segment, avec les points de rupture en pointillés.]**
+Avec K = 4, l’algorithme renvoie trois points de rupture, notés t = (51, 81, 131). Les quatre segments sont donc [1 ; 50], [51 ; 80], [81 ; 130] et [131 ; 160], d’effectifs = 50, 30, 50 et 30, et le critère vaut C ≈ 300,6.
 
-[À COMPLÉTER : points de rupture trouvés, effectifs et caractéristiques des segments.]
+Ces ruptures coïncident avec les changements de niveau visibles sur les données brutes (figure 3). Le segment 1 et le segment 3 ont des niveaux moyens proches, mais ils sont séparés par le segment 2 : la contrainte d’ordre les empêche d’être regroupés.
+
+Figure 3 : segmentation de Fisher avec K = 4, ruptures en pointillés (fisher_simu.png).
 
 ### 3.4 Comparaison avec k-means et CAH
 

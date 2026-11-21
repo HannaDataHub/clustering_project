@@ -63,9 +63,12 @@ Ces deux colonnes sont **indépendantes**. B n'a pas besoin de Fisher pour avanc
 
 | Personne A | Personne B |
 |---|---|
-| **3A.** Calculer C pour K = 1…Kmax (un seul appel avec Kmax suffit, car M[n,k] donne C pour chaque k) et tracer la courbe du coude. (code prêt dans `main.py`, pas encore lancé) | **3B.** **PARALLÈLE :** pendant ce temps, lancer k-means et CAH pour plusieurs valeurs de K sur `sequencesimu`, et préparer les graphiques. |
-| **3A'.** **ENSEMBLE** : choisir K à deux (lecture du coude). | **3B'.** **ATTEND le K choisi** : calculer les partitions finales k-means et CAH avec ce K. |
-| **3A''.** Segmentation finale par Fisher avec ce K, puis figure avec les ruptures. | **3B''.** **ATTEND la partition de Fisher** : comparer (ARI entre partitions, inertie, graphiques côte à côte). |
+| **3A.** Calculer C pour K = 1…Kmax (un seul appel avec Kmax suffit, car M[n,k] donne C pour chaque k) et tracer la courbe du coude. (code prêt dans `main.py`, pas encore lancé) | FAIT
+**3B.** **PARALLÈLE :** pendant ce temps, lancer k-means et CAH pour plusieurs valeurs de K sur `sequencesimu`, et préparer les graphiques. |
+| **3A'.** : choisir K à deux (lecture du coude). | FAIT
+**3B'.** **ATTEND le K choisi** : calculer les partitions finales k-means et CAH avec ce K. |
+| **3A''.** Segmentation finale par Fisher avec ce K, puis figure avec les ruptures. | FAIT
+**3B''.** **ATTEND la partition de Fisher** : comparer (ARI entre partitions, inertie, graphiques côte à côte). |
 
 **Livrable :** courbe du coude, 3 partitions tracées, tableau comparatif (inertie, ARI).
 
