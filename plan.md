@@ -59,7 +59,7 @@ Ces deux colonnes sont **indépendantes**. B n'a pas besoin de Fisher pour avanc
 
 ---
 
-## Étape 3 : Données simulées - À FAIRE
+## Étape 3 : Données simulées - FAIT
 
 | Personne A et Personne B| Statut |
 |---|---|

@@ -109,9 +109,10 @@ Forme de X : (160, 2)
  7 |       277.6 |      7.9  ( 2.8 %)
  8 |       270.7 |      6.9  ( 2.5 %)
 
-C diminue toujours quand K augmente, ce qui est normal : on cherche donc le point où le gain devient faible. Le passage de K = 3 à K = 4 apporte encore un gain d’environ 35 %, alors qu’au-delà de K = 4 le gain est inférieur à 3 % par segment ajouté. Nous retenons K = 4. Avec K = 3, un bloc distinct (celui où la variable 2 est élevée) reste fusionné avec le premier bloc.
+C diminue toujours quand K augmente, ce qui est normal : on cherche donc le point où le gain devient faible. Le passage de K = 3 à K = 4 apporte encore un gain d’environ 35 %, alors qu’au-delà de K = 4 le gain est inférieur à 3 % par segment ajouté. Nous retenons K = 4. Avec K = 3, la segmentation (ruptures en 81 et 131) laisse regroupés dans un même segment le premier bloc et le bloc où la variable 2 est élevée (figure 3).
 
 Figure 2 : courbe du coude (coude_simule.png).
+Figure 3 : segmentation de Fisher avec K = 3 (optionnelle, pour illustrer le choix de K).
 
 ### 3.3 Segmentation par l'algorithme de Fisher
 
@@ -119,15 +120,15 @@ Avec K = 4, l’algorithme renvoie trois points de rupture, notés t = (51, 81, 
 
 Ces ruptures coïncident avec les changements de niveau visibles sur les données brutes (figure 3). Le segment 1 et le segment 3 ont des niveaux moyens proches, mais ils sont séparés par le segment 2 : la contrainte d’ordre les empêche d’être regroupés.
 
-Figure 3 : segmentation de Fisher avec K = 4, ruptures en pointillés (fisher_simu.png).
+Figure 4 : segmentation de Fisher avec K = 4, ruptures en pointillés (fisher_simu.png).
 
 ### 3.4 Comparaison avec k-means et CAH
 
-**[FIGURE 3 : trois partitions côte à côte (Fisher, k-means, CAH).]**
+**[trois partitions côte à côte (Fisher, k-means, CAH).]**
 
 | Méthode | Inertie intra-classe | ARI avec Fisher | Segments contigus ? |
 |---|---|---|---|
-| Fisher | [ ] | 1 | oui |
+| Fisher | [300,6] | 1 | oui |
 | k-means | [ ] | [ ] | [oui / non] |
 | CAH (Ward) | [ ] | [ ] | [oui / non] |
 
@@ -141,16 +142,14 @@ Figure 3 : segmentation de Fisher avec K = 4, ruptures en pointillés (fisher_si
 
 ### 4.1 Données et protocole
 
-Les données comportent 140 observations dans $\mathbb{R}^{552}$ et une vraie partition en 4 classes (553e colonne). Nous segmentons la séquence en $K = 4$ classes avec Fisher, k-means et la CAH, et comparons chaque partition à la vraie partition.
-
-[À COMPLÉTER : description des données (ce que représente une observation), vraies positions de rupture : [ ].]
+Les données comportent 140 observations dans R^552 (une observation = un vecteur de 552 mesures), accompagnées d'une vraie partition en 4 classes (553e colonne). Les classes forment quatre blocs consécutifs d'effectifs 35, 40, 45 et 20, avec des ruptures aux positions 36, 76 et 121. Douze observations sont identiques à une autre observation du fichier. Nous segmentons la séquence en K = 4 classes avec Fisher, k-means et la CAH, et nous comparons chaque partition à la vraie partition.
 
 ### 4.2 Résultats
 
 | Méthode | ARI avec la vraie partition | Erreur de classement | Ruptures trouvées | Temps de calcul |
 |---|---|---|---|---|
-| Vraie partition | 1 | 0 | [ ] | n.a. |
-| Fisher | [ ] | [ ] | [ ] | [ ] s |
+| Vraie partition | 1 | 0 | [ 36, 76, 121] | n.a. |
+| Fisher | [1000] | [0%] | [36, 76, 121] | [2,12 ] s |
 | k-means | [ ] | [ ] | [ ] | [ ] s |
 | CAH (Ward) | [ ] | [ ] | [ ] | [ ] s |
 
@@ -158,20 +157,31 @@ Les données comportent 140 observations dans $\mathbb{R}^{552}$ et une vraie pa
 
 **[FIGURE 5 ou TABLEAU : matrices de confusion de chaque méthode.]** Attention : les numéros de classes sont arbitraires pour k-means et la CAH, il faut apparier les classes avant de calculer une erreur de classement.
 
+Matrice de confusion de Fisher :
+
+vraie \ estimée	1	2	3	4
+1	35	0	0	0
+2	0	40	0	0
+3	0	0	45	0
+4	0	0	0	20
+AJOUTER fisher_aiguillage.png
+
 ### 4.3 Analyse
 
 [À COMPLÉTER : Fisher retrouve-t-il les vraies ruptures ? À combien d'observations près ? Que font k-means et la CAH (leurs classes sont-elles contiguës) ?]
+
+Partie Fisher :
+Avec K = 4, l'algorithme de Fisher retrouve exactement la vraie partition : les trois ruptures sont identiques (36, 76, 121), la matrice de confusion est diagonale et l'ARI vaut 1. L'inertie obtenue est égale à celle de la vraie partition, ce qui signifie que, pour ce jeu de données, la vraie partition est l'optimum global du critère sous contrainte d'ordre. Ce résultat s'explique par la structure des données : chaque classe est un bloc consécutif, ce qui correspond exactement à l'hypothèse de la méthode. La dimension élevée (p = 552) ne pose pas de difficulté : le critère additionne simplement les carrés des écarts sur toutes les variables.
 
 ---
 
 ## 5. Discussion
 
-- **Rôle de la contrainte d'ordre.** [À COMPLÉTER : lorsque la vraie structure est composée de segments consécutifs, la contrainte aide, car elle élimine les partitions incohérentes ; dans le cas contraire, elle peut être pénalisante.]
-- **Optimalité.** Fisher fournit un optimum global du critère $C$ sous contrainte d'ordre ; k-means ne garantit qu'un optimum local et dépend de l'initialisation.
-- **Dimension élevée ($p = 552$).** [À COMPLÉTER : effet sur les distances, sur la qualité de k-means et de la CAH, sur le temps de calcul de $D$.]
-- **Choix de $K$.** La méthode du coude est subjective ; [À COMPLÉTER : le coude était-il net sur les données simulées ?]
-- **Coût de calcul.** Complexité en $O(Kn^2)$ pour la récurrence, mémoire en $O(n^2)$ : adapté à quelques milliers d'observations, plus coûteux pour de très longues séquences.
-- **Limites.** Le critère (inertie intra-classe) suppose des segments homogènes en moyenne ; il détecte mal des changements de variance ou de dynamique avec une moyenne constante. Il n'existe pas de critère automatique de sélection de $K$.
+Optimalité : Fisher fournit l'optimum global du critère sous contrainte d'ordre ; sur aiguillage, cet optimum coïncide avec la vraie partition.
+Rôle de la contrainte d'ordre : sur sequencesimu, les blocs 1 et 3 ont le même niveau moyen mais sont séparés dans le temps ; Fisher les garde distincts, ce qu'un clustering sans contrainte ne peut pas faire (à vérifier avec les résultats de k-means).
+Temps de calcul : 2,12 s sur aiguillage (n = 140, p = 552). La récurrence coûte O(K n²) ; le calcul naïf de la matrice D coûte O(n³ p), et pourrait être ramené à O(n² p) avec des sommes cumulées. Le temps dépend de la machine.
+Choix de K : la méthode du coude est subjective ; sur sequencesimu, le coude est net à K = 4 (gain d'environ 35 % de K = 3 à K = 4, puis environ 3 % ou moins).
+Limites : le critère suppose des segments homogènes en moyenne ; il n'existe pas de critère automatique de sélection de K.
 
 ---
 
