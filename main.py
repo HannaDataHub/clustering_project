@@ -18,7 +18,7 @@ def partie_simulee(kmax=8):
     plot_coude(Cs, "Coude : sequencesimu")
     plt.savefig("coude_simule.png", dpi=150)
 
-    K = 3      # TODO : à choisir à deux après lecture du coude
+    K = 4      # TODO : à choisir à deux après lecture du coude
     t, lab_fisher, C, _ = clustfisher(X, K)
     lab_km = kmeans_labels(X, K)
     lab_cah = cah_labels(X, K)
